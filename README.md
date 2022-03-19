@@ -6,6 +6,7 @@
     - transe
     - transr
     - transd
+    - transh
     - complex
     - distmult
 
