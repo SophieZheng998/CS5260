@@ -169,7 +169,7 @@ class DataLoaderBase(object):
         while line[0].isdigit():
             line[-1] = line[-1][:-1]  # eliminate \n
             constrain[int(line[0])] = set([int(line[i]) for i in range(2, len(line))])
-            print("Relation {} has {} constraints.".format(int(line[0]), len(constrain[int(line[0])])))
+            # print("Relation {} has {} constraints.".format(int(line[0]), len(constrain[int(line[0])])))
             line = file.readline()
             line = file.readline().split('\t')
         file.close()
