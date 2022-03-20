@@ -67,14 +67,55 @@ class DataLoaderKGAT(DataLoaderBase):
         self.train_kg_dict = collections.defaultdict(list)
         self.train_relation_dict = collections.defaultdict(list)
 
+        # for type constrain
+        constrained = os.path.exists('type_constrain.txt')
+        if not constrained:
+            print("Trying to generate constrain file...")
+            lef = {}
+            rig = {}
+            rellef = {}
+            relrig = {}
+        # end
+
         for row in self.kg_train_data.iterrows():
             h, r, t = row[1]
             h_list.append(h)
             t_list.append(t)
             r_list.append(r)
 
+            # for type constrain
+            if not constrained:
+                if (h, r) not in lef:
+                    lef[(h, r)] = []
+                if (r, t) not in rig:
+                    rig[(r, t)] = []
+                lef[(h, r)].append(t)
+                rig[(r, t)].append(h)
+                if r not in rellef:
+                    rellef[r] = {}
+                if r not in relrig:
+                    relrig[r] = {}
+                rellef[r][h] = 1
+                relrig[r][t] = 1
+            # end
+
             self.train_kg_dict[h].append((t, r))
             self.train_relation_dict[r].append((h, t))
+
+        # for type constrain
+        if not constrained:
+            f = open("type_constrain.txt", "w")
+            for i in rellef:
+                f.write("%s\t%d" % (i, len(rellef[i])))
+                for j in rellef[i]:
+                    f.write("\t%s" % (j))
+                f.write("\n")
+                f.write("%s\t%d" % (i, len(relrig[i])))
+                for j in relrig[i]:
+                    f.write("\t%s" % (j))
+                f.write("\n")
+            f.close()
+        # end
 
         self.h_list = torch.LongTensor(h_list)
         self.t_list = torch.LongTensor(t_list)

@@ -25,7 +25,6 @@ while 1:
 triple.close()
 
 f = open("type_constrain.txt", "w")
-f.write("%d\n" % (len(rellef)))
 for i in rellef:
     f.write("%s\t%d" % (i, len(rellef[i])))
     for j in rellef[i]:

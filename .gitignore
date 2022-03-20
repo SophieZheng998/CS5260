@@ -10,3 +10,5 @@ datasets/yelp2018/_rel_ecount
 __pycache__
 trained_model/
 
+# customer setting
+n-n.py
