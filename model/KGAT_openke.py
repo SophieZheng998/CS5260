@@ -332,9 +332,9 @@ class KGAT(nn.Module):
         h = self.kg_embedding_model.ent_embeddings.weight[h_list]
         t = self.kg_embedding_model.ent_embeddings.weight[t_list]
         r = self.kg_embedding_model.rel_embeddings.weight[r_idx]
-        r_norm = self.kg_embedding_model.norm_vector.weight[r_idx]
-        h = self.kg_embedding_model._transfer(h, r_norm)
-        t = self.kg_embedding_model._transfer(t, r_norm)
+        #r_norm = self.kg_embedding_model.norm_vector.weight[r_idx]
+        #h = self.kg_embedding_model._transfer(h, r_norm)
+        #t = self.kg_embedding_model._transfer(t, r_norm)
 
         v_list = torch.sum(t * torch.tanh(h + r), dim=1)
 
