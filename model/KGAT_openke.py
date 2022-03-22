@@ -135,7 +135,8 @@ class KGAT(nn.Module):
             other_entity_embed = nn.Parameter(torch.Tensor(self.n_entities - item_pre_embed.shape[0], self.embed_dim))
             nn.init.xavier_uniform_(other_entity_embed)
             entity_user_embed = torch.cat([item_pre_embed, other_entity_embed, user_pre_embed], dim=0)
-            self.entity_user_embed.weight = nn.Parameter(entity_user_embed)
+            #self.entity_user_embed.weight = nn.Parameter(entity_user_embed)
+            self.kg_embedding_model.ent_embeddings.weight = nn.Parameter(entity_user_embed)
         else:
             nn.init.xavier_uniform_(self.entity_user_embed.weight)
 
@@ -153,7 +154,8 @@ class KGAT(nn.Module):
 
 
     def calc_cf_embeddings(self):
-        ego_embed = self.entity_user_embed.weight
+        #ego_embed = self.entity_user_embed.weight
+        ego_embed = self.kg_embedding_model.ent_embeddings.weight
         all_embed = [ego_embed]
 
         for idx, layer in enumerate(self.aggregator_layers):
@@ -279,7 +281,7 @@ class KGAT(nn.Module):
 				 torch.mean(pos_t_embed ** 2) + 
                  torch.mean(neg_t_embed ** 2) + 
 				 torch.mean(r_embed ** 2) +
-				 torch.mean(r_norm ** 2)) / 5
+				 torch.mean(r_norm ** 2)) / 2
 
         loss = kg_loss + self.kg_l2loss_lambda * l2_loss
 
