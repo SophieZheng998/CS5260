@@ -177,7 +177,7 @@ class DataLoaderBase(object):
         else:
             batch_head = [random.choice(exist_heads) for _ in range(batch_size)]
 
-        if self.args.type_consrain:
+        if self.args.type_constrain:
             self.process_constrain()
 
         batch_relation, batch_pos_tail, batch_neg_tail = [], [], []
