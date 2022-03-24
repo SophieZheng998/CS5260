@@ -66,6 +66,8 @@ def parse_kgat_args():
     parser.add_argument('--kg_embedding_model_name', type=str, default="transh",
                         help='Knowledge graph embedding model.')
 
+    parser.add_argument('--type_constrain', type=bool, default = False)
+
 
     args = parser.parse_args()
 

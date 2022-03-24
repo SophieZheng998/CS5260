@@ -136,6 +136,16 @@ class DataLoaderBase(object):
     def sample_neg_triples_for_h(self, kg_dict, head, relation, n_sample_neg_triples, highest_neg_idx):
         pos_triples = kg_dict[head]
 
+        # prepare constrain
+        constrain = []
+        if self.args.type_constrain:
+            pos_constrain = set()
+            for pair in pos_triples:  # kg_dict (train_kg_dict): h:[(t,r)]
+                if pair[1] == relation:
+                    pos_constrain.add(pair[0])
+            constrain = list(self.all_constraints[relation].difference(pos_constrain))
+        # preparation end
+
         sample_neg_tails = []
         while True:
             if len(sample_neg_tails) == n_sample_neg_triples:
@@ -146,6 +156,19 @@ class DataLoaderBase(object):
                 sample_neg_tails.append(tail)
         return sample_neg_tails
 
+    def process_constrain(self):
+        constrain = dict()
+        file = open('type_constrain.txt', 'r')
+        line = file.readline()
+        line = file.readline().split('\t')
+        while line[0].isdigit():
+            line[-1] = line[-1][:-1]  # eliminate \n
+            constrain[int(line[0])] = set([int(line[i]) for i in range(2, len(line))])
+            # print("Relation {} has {} constraints.".format(int(line[0]), len(constrain[int(line[0])])))
+            line = file.readline()
+            line = file.readline().split('\t')
+        file.close()
+        self.all_constraints = constrain
 
     def generate_kg_batch(self, kg_dict, batch_size, highest_neg_idx):
         exist_heads = kg_dict.keys()
@@ -153,6 +176,9 @@ class DataLoaderBase(object):
             batch_head = random.sample(exist_heads, batch_size)
         else:
             batch_head = [random.choice(exist_heads) for _ in range(batch_size)]
+
+        if self.args.type_consrain:
+            self.process_constrain()
 
         batch_relation, batch_pos_tail, batch_neg_tail = [], [], []
         for h in batch_head:
